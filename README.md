@@ -12,6 +12,7 @@ When running commands in chat, make sure to prefix them with a slash '/'.
 - **adminchat** -- used to switch from regular to admin chat and back
 
 ## Configuration
+```json
 {
   "Prefix (admin chat is used when message starts with this)": "@",
   "Format (how the message is formatted in chat)": "[#red]Admin Chat[/#] [#grey]{name}[/#]: {message}"
