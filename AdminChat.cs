@@ -5,7 +5,7 @@ using Oxide.Core.Libraries.Covalence;
 
 namespace Oxide.Plugins
 {
-    [Info("Admin Chat", "LaserHydra", "2.0.0")]
+    [Info("Admin Chat", "LaserHydra", "2.0.1")]
     [Description("Allows admins to write in an admin-only chatroom")]
     internal class AdminChat : CovalencePlugin
     {
@@ -82,7 +82,14 @@ namespace Oxide.Plugins
                 .Replace("{message}", message);
 
             foreach (var player in players.Connected.Where(p => p.HasPermission(Permission)))
+            {
+#if RUST
+                (player.Object as BasePlayer).SendConsoleCommand("chat.add", new object[] { player.Id, covalence.FormatText(message) });
+#else
                 player.Message(message);
+#endif
+            }
+                
         }
 
         private bool HasAdminChatEnabled(IPlayer player) => _enabledUserIds.Contains(player.Id);
