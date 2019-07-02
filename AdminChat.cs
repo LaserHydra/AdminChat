@@ -6,7 +6,7 @@ using Oxide.Core.Libraries.Covalence;
 
 namespace Oxide.Plugins
 {
-    [Info("Admin Chat", "LaserHydra", "2.0.2")]
+    [Info("Admin Chat", "LaserHydra", "2.0.3")]
     [Description("Allows admins to write in an admin-only chatroom")]
     internal class AdminChat : CovalencePlugin
     {
@@ -40,7 +40,7 @@ namespace Oxide.Plugins
         private object OnBetterChat(Dictionary<string, object> data)
         {
             var player = data["Player"] as IPlayer;
-            var message = data["Text"] as string;
+            var message = data["Message"] as string;
 
             if (!player.HasPermission(Permission))
                 return null;
