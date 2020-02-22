@@ -6,7 +6,7 @@ using Oxide.Core.Libraries.Covalence;
 
 namespace Oxide.Plugins
 {
-    [Info("Admin Chat", "LaserHydra", "2.0.3")]
+    [Info("Admin Chat", "LaserHydra", "2.0.4")]
     [Description("Allows admins to write in an admin-only chatroom")]
     internal class AdminChat : CovalencePlugin
     {
@@ -37,18 +37,18 @@ namespace Oxide.Plugins
             return null;
         }
 
-        private object OnBetterChat(Dictionary<string, object> data)
+        private void OnBetterChat(Dictionary<string, object> data)
         {
             var player = data["Player"] as IPlayer;
             var message = data["Message"] as string;
 
             if (!player.HasPermission(Permission))
-                return null;
+                return;
 
             if (message.StartsWith(_config.Prefix) || HasAdminChatEnabled(player))
-                return true;
-
-            return null;
+            {
+                data["CancelOption"] = 1;
+            }
         }
 
         #endregion
@@ -80,12 +80,12 @@ namespace Oxide.Plugins
 
             string formattedMessage = _config.Format
                 .Replace("{name}", sender.Name)
-                .Replace("{message}", message);
+                .Replace("{message}", message.Trim());
 
             foreach (var player in players.Connected.Where(p => p.HasPermission(Permission)))
             {
 #if RUST
-                (player.Object as BasePlayer).SendConsoleCommand("chat.add", new object[] { player.Id, covalence.FormatText(formattedMessage) });
+                (player.Object as BasePlayer).SendConsoleCommand("chat.add", new object[] { (int) ConVar.Chat.ChatChannel.Global, sender.Id, covalence.FormatText(formattedMessage) });
 #else
                 player.Message(formattedMessage);
 #endif
